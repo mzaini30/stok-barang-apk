@@ -19,6 +19,18 @@
         body {
             padding: 20px;
         }
+
+        .gridnya {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+
+        .menu {
+            grid-column: span 1 / span 1;
+        }
+
+        .utama {
+            grid-column: span 4 / span 4;
+        }
     </style>
 
     <script>
@@ -26,22 +38,19 @@
     </script>
 
     <div id="app">
-        <div class="grid">
-            <div>
-                <h2>Stok Barang</h2>
-                <ol>
-                    <li><a href="#/stok/form/baru">Tambah Baru</a></li>
-                    <li><a href="#/stok/list">List Stok</a></li>
-                </ol>
-            </div>
-            <div>
+        <div :class="$route.fullPath != '/database' ? 'grid gridnya' : null">
+
+            <ol v-if="$route.fullPath != '/database'" class="menu">
+                <li><a href="#/stok/list">Stok Barang</a></li>
+            </ol>
+            <div :class="$route.fullPath != '/database' ? 'utama' : null">
 
                 <router-view></router-view>
             </div>
         </div>
     </div>
 
-    <html-vue><template id="v-f9eb1113">
+    <html-vue><template id="v-346e5bb6">
     
 
 
@@ -124,7 +133,7 @@
 routes.push({
     path: '/database',
     component: {
-        template: '#v-f9eb1113',
+        template: '#v-346e5bb6',
         
         data() {
             return {
@@ -151,43 +160,115 @@ routes.push({
     
     }
 });
-</script><template id="v-6a3a438c"><h1>Aplikasi Stok Barang</h1></template><script>
+</script><template id="v-2560402a"><h1>Aplikasi Stok Barang</h1></template><script>
       routes.push({
           path: '/',
           component: {
-              template: '#v-6a3a438c'
+              template: '#v-2560402a'
           }
       });
-      </script><template id="v-e68df95a"><h2>List Stok Barang</h2></template><script>
-      routes.push({
-          path: '/stok/list',
-          component: {
-              template: '#v-e68df95a'
-          }
-      });
-      </script><template id="v-a4327d98"><h1 v-if="$route.params.sebagai == 'baru'">Tambah Stok</h1>
+      </script><template id="v-7e0bb708">
 
-<form action="">
+<h1>Tambah Stok</h1>
+
+<form action="" @submit.prevent="simpan">
     <label for="">Nama Barang</label>
-    <input type="text">
+    <input type="text" required v-model="nama_barang">
     <label for="">Jenis Barang</label>
-    <select name="" id="">
-        <option value=""></option>
-    </select>
+    <input type="text" required v-model="jenis_barang">
     <label for="">Ukuran</label>
-    <select name="" id="">
-        <option value=""></option>
-    </select>
+    <input type="number" required v-model="ukuran">
     <label for="">Harga Beli</label>
-    <input type="number" name="" id="">
+    <input type="number" name="" required id="" v-model="harga_beli">
+    <label for="">Harga Jual</label>
+    <input type="number" name="" id="" required v-model="harga_jual">
+    <label for="">Datangnya Kapan</label>
+    <input type="date" name="" id="" required v-model="datangnya_kapan">
+    <input type="submit" value="Simpan">
 </form></template><script>
+routes.push({
+    path: '/stok/baru',
+    component: {
+        template: '#v-7e0bb708',
+        
+        data() {
+            return {
+                nama_barang: '',
+                jenis_barang: '',
+                ukuran: '',
+                harga_beli: '',
+                harga_jual: '',
+                datangnya_kapan: ''
+            };
+        },
+        methods: {
+            simpan() {
+                alasql('insert into stok_barang (nama_barang, jenis_barang, ukuran, harga_beli, harga_jual, datangnya_kapan) values (?, ?, ?, ?, ?, ?)', [this.nama_barang, this.jenis_barang, this.ukuran, this.harga_beli, this.harga_jual, this.datangnya_kapan]);
+                location.href = '#/stok/list';
+            }
+        }
+    
+    }
+});
+</script><template id="v-a564acfd"></template><script>
       routes.push({
-          path: '/stok/form/:sebagai',
+          path: '/stok/ubah/:id',
           component: {
-              template: '#v-a4327d98'
+              template: '#v-a564acfd'
           }
       });
-      </script></html-vue>
+      </script><template id="v-2c5c2c98">
+
+<p><a href="#/stok/baru">Tambah Stok Barang</a></p>
+<h2>List Stok Barang</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Nama Barang</th>
+            <th>Harga Beli</th>
+            <th>Harga Jual</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr v-for="x in data" :key="x.id">
+            <td>{{ x.nama_barang }}</td>
+            <td>{{ x.harga_beli.toLocaleString() }}</td>
+            <td>{{ x.harga_jual.toLocaleString() }}</td>
+            <td>
+                <a :href="'#/stok/ubah/' + x.id">Ubah</a>
+                &nbsp;
+                <a href="">Hapus</a>
+            </td>
+        </tr>
+    </tbody>
+</table></template><script>
+routes.push({
+    path: '/stok/list',
+    component: {
+        template: '#v-2c5c2c98',
+        
+        data() {
+            return {
+                data: []
+
+            };
+        },
+        mounted() {
+            this.data = alasql(`select 
+  id,
+  nama_barang,
+  harga_beli,
+  harga_jual
+from 
+  stok_barang
+order by
+  nama_barang`);
+        }
+    
+    }
+});
+</script></html-vue>
 
     <script>
 

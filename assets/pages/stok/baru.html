@@ -1,0 +1,38 @@
+<script>
+    export default {
+        data() {
+            return {
+                nama_barang: '',
+                jenis_barang: '',
+                ukuran: '',
+                harga_beli: '',
+                harga_jual: '',
+                datangnya_kapan: ''
+            };
+        },
+        methods: {
+            simpan() {
+                alasql('insert into stok_barang (nama_barang, jenis_barang, ukuran, harga_beli, harga_jual, datangnya_kapan) values (?, ?, ?, ?, ?, ?)', [this.nama_barang, this.jenis_barang, this.ukuran, this.harga_beli, this.harga_jual, this.datangnya_kapan]);
+                location.href = '#/stok/list';
+            }
+        }
+    }
+</script>
+
+<h1>Tambah Stok</h1>
+
+<form action="" @submit.prevent="simpan">
+    <label for="">Nama Barang</label>
+    <input type="text" required v-model="nama_barang">
+    <label for="">Jenis Barang</label>
+    <input type="text" required v-model="jenis_barang">
+    <label for="">Ukuran</label>
+    <input type="number" required v-model="ukuran">
+    <label for="">Harga Beli</label>
+    <input type="number" name="" required id="" v-model="harga_beli">
+    <label for="">Harga Jual</label>
+    <input type="number" name="" id="" required v-model="harga_jual">
+    <label for="">Datangnya Kapan</label>
+    <input type="date" name="" id="" required v-model="datangnya_kapan">
+    <input type="submit" value="Simpan">
+</form>

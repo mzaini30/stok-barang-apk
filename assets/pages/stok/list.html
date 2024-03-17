@@ -1,1 +1,46 @@
+<script>
+    export default {
+        data() {
+            return {
+                data: []
+
+            };
+        },
+        mounted() {
+            this.data = alasql(`select 
+  id,
+  nama_barang,
+  harga_beli,
+  harga_jual
+from 
+  stok_barang
+order by
+  nama_barang`);
+        }
+    }
+</script>
+
+<p><a href="#/stok/baru">Tambah Stok Barang</a></p>
 <h2>List Stok Barang</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Nama Barang</th>
+            <th>Harga Beli</th>
+            <th>Harga Jual</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr v-for="x in data" :key="x.id">
+            <td>{{ x.nama_barang }}</td>
+            <td>{{ x.harga_beli.toLocaleString() }}</td>
+            <td>{{ x.harga_jual.toLocaleString() }}</td>
+            <td>
+                <a :href="'#/stok/ubah/' + x.id">Ubah</a>
+                &nbsp;
+                <a href="">Hapus</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
