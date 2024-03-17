@@ -1,0 +1,109 @@
+<script>
+    export default {
+        data() {
+            return {
+                nama_barang: '',
+                jenis_barang: '',
+                ukuran: '',
+                harga_beli: '',
+                harga_jual: '',
+                datangnya_kapan: '',
+                listJenisBarang: [],
+                listUkuran: [],
+                banyak: '',
+                stokTersedia: ''
+            };
+        },
+        mounted() {
+            this.listJenisBarang = alasql(`select distinct
+  jenis_barang
+from
+  stok_barang
+order by
+  jenis_barang`);
+            this.listUkuran = alasql(`select distinct
+  ukuran
+from
+  stok_barang
+order by
+  ukuran`);
+            let data = alasql(`select 
+  *
+from 
+  stok_barang
+where
+  id = ?
+order by
+  nama_barang`, [
+                +this.$route.params.id
+            ])[0];
+            this.nama_barang = data.nama_barang;
+            this.jenis_barang = data.jenis_barang;
+            this.ukuran = data.ukuran;
+            this.harga_beli = data.harga_beli;
+            this.harga_jual = data.harga_jual;
+            this.datangnya_kapan = data.datangnya_kapan;
+            this.banyak = data.banyak;
+            this.stokTersedia = data.stok_tersedia;
+        },
+        methods: {
+            simpan() {
+                alasql(`update
+  stok_barang
+set
+  nama_barang = ?,
+  jenis_barang = ?,
+  ukuran = ?,
+  harga_beli = ?,
+  harga_jual = ?,
+  datangnya_kapan = ?,
+  banyak = ?,
+  stok_tersedia = ?,
+  diupdate_kapan = ?
+where 
+  id = ?`, [
+                    this.nama_barang,
+                    this.jenis_barang,
+                    this.ukuran,
+                    this.harga_beli,
+                    this.harga_jual,
+                    this.datangnya_kapan,
+                    this.banyak,
+                    this.stokTersedia,
+                    new Date().toISOString().split('T')[0]
+                    ,
+                    +this.$route.params.id
+                ]);
+                location.href = '#/stok/list';
+            }
+        }
+    }
+</script>
+
+<h1>Edit Stok</h1>
+
+<form action="" @submit.prevent="simpan">
+    <label for="">Nama Barang</label>
+    <input type="text" required v-model="nama_barang">
+    <label for="">Jenis Barang</label>
+    <input type="text" required v-model="jenis_barang" list="jenis-barang">
+    <datalist id="jenis-barang">
+        <option v-for="x in listJenisBarang" :value="x.jenis_barang"></option>
+    </datalist>
+    <label for="">Ukuran</label>
+    <input type="number" required v-model="ukuran" list="ukuran">
+    <datalist id="ukuran">
+        <option v-for="x in listUkuran" :value="x.ukuran"></option>
+    </datalist>
+    <label for="">Harga Beli</label>
+    <input type="number" name="" required id="" v-model="harga_beli">
+    <label for="">Harga Jual</label>
+    <input type="number" name="" id="" required v-model="harga_jual">
+    <label for="">Datangnya Kapan</label>
+    <input type="date" name="" id="" required v-model="datangnya_kapan">
+    <label for="">Banyak</label>
+    <input type="number" required v-model="banyak">
+    <label for="">Stok Tersedia</label>
+    <input type="number" required v-model="stokTersedia">
+    <input type="submit" value="Update">
+</form>

@@ -2,32 +2,66 @@
     export default {
         data() {
             return {
-                data: []
-
+                data: [],
+                tampilStokHabis: false
             };
         },
-        mounted() {
-            this.data = alasql(`select 
+        methods: {
+            async hapus(id) {
+                let tanya = await Swal.fire('Hapus?');
+                if (tanya.isConfirmed) {
+                    alasql(`delete from stok_barang where id = ?`, [id]);
+                    this.dapatkanData();
+                }
+            },
+            dapatkanData() {
+                this.data = alasql(`select 
   id,
   nama_barang,
   harga_beli,
-  harga_jual
+  harga_jual,
+  stok_tersedia
 from 
   stok_barang
 order by
   nama_barang`);
+                this.tampilStokHabis = true;
+            },
+            dapatkanDataTanpaStokHabis() {
+                this.data = alasql(`select 
+  id,
+  nama_barang,
+  harga_beli,
+  harga_jual,
+  stok_tersedia
+from 
+  stok_barang
+where
+  stok_tersedia > 0
+order by
+  nama_barang`);
+                this.tampilStokHabis = false;
+            }
+        },
+        mounted() {
+            this.dapatkanDataTanpaStokHabis();
         }
     }
 </script>
 
 <p><a href="#/stok/baru">Tambah Stok Barang</a></p>
 <h2>List Stok Barang</h2>
+
+<p v-if="tampilStokHabis"><a href="" @click.prevent="dapatkanDataTanpaStokHabis">Sembunyikan Stok Habis</a></p>
+<p v-else><a href="" @click.prevent="dapatkanData">Tampilkan Stok Habis</a></p>
+
 <table>
     <thead>
         <tr>
             <th>Nama Barang</th>
             <th>Harga Beli</th>
             <th>Harga Jual</th>
+            <th>Stok Tersedia</th>
             <th></th>
         </tr>
     </thead>
@@ -36,10 +70,11 @@ order by
             <td>{{ x.nama_barang }}</td>
             <td>{{ x.harga_beli.toLocaleString() }}</td>
             <td>{{ x.harga_jual.toLocaleString() }}</td>
+            <td>{{ x.stok_tersedia }}</td>
             <td>
                 <a :href="'#/stok/ubah/' + x.id">Ubah</a>
                 &nbsp;
-                <a href="">Hapus</a>
+                <a href="" @click.prevent="hapus(x.id)">Hapus</a>
             </td>
         </tr>
     </tbody>

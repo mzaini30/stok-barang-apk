@@ -12,7 +12,10 @@ create table if not exists stok_barang (
     ukuran text,
     harga_beli number,
     harga_jual number,
-    datangnya_kapan date
+    datangnya_kapan date,
+    diupdate_kapan date,
+    banyak number,
+    stok_tersedia number
 );
 
 

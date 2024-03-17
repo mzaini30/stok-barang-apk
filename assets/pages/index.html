@@ -1,1 +1,23 @@
-<h1>Aplikasi Stok Barang</h1>
+<script>
+    export default {
+        data() {
+            return {
+                pendapatanKotor: '',
+                pendapatanBersih: ''
+            };
+        },
+        mounted() {
+            let pendapatan = alasql(`select
+  sum(harga_jual * stok_tersedia) as pendapatan_kotor,
+  sum((harga_jual - harga_beli) * stok_tersedia) as pendapatan_bersih
+from
+  stok_barang`)[0];
+            this.pendapatanKotor = pendapatan.pendapatan_kotor;
+            this.pendapatanBersih = pendapatan.pendapatan_bersih;
+        }
+    }
+</script>
+
+<h1>Ringkasan</h1>
+<p>Total Pendapatan Kotor: <mark>{{ pendapatanKotor.toLocaleString() }}</mark></p>
+<p>Total Pendapatan Bersih: <mark>{{ pendapatanBersih.toLocaleString() }}</mark></p>
