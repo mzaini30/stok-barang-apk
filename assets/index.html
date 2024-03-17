@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stok Barang</title>
+</head>
+
+<body>
+    <script src="./lib/vue.js"></script>
+    <script src="./lib/vue-router.js"></script>
+    <script src="./lib/alasql.js"></script>
+    <script src="./lib/swal.js"></script>
+    <script src="./lib/db.js"></script>
+    <link rel="stylesheet" href="./lib/pico.css">
+
+    <style>
+        body {
+            padding: 20px;
+        }
+    </style>
+
+    <script>
+        let routes = [];
+    </script>
+
+    <div id="app">
+        <div class="grid">
+            <div>
+                <h2>Stok Barang</h2>
+                <ol>
+                    <li><a href="#/stok/form/baru">Tambah Baru</a></li>
+                    <li><a href="#/stok/list">List Stok</a></li>
+                </ol>
+            </div>
+            <div>
+
+                <router-view></router-view>
+            </div>
+        </div>
+    </div>
+
+    <html-vue><template id="v-f9eb1113">
+    
+
+
+
+<table>
+    <tbody>
+        <tr>
+            <td>
+                <ol>
+
+                    <li v-for="x in table.sort()">
+                        <a href="" @click.prevent="pilihTable(x)">
+
+                            {{ x }}
+                        </a>
+                    </li>
+                </ol>
+            </td>
+            <td>
+                <h1>{{ terpilihJudul }}</h1>
+                <table v-if="terpilihIsi.length > 0">
+                    <thead>
+                        <tr>
+                            <th v-for="(x, n) in terpilihIsi[0]">
+                                {{ n }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="x in terpilihIsi">
+                            <td v-for="n in x">{{ n }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td>
+                <h2>Query</h2>
+                <form action="" @submit.prevent="jalankanQuery">
+                    <textarea name="" v-model="query" id="" cols="30" rows="10"></textarea>
+                    <input type="submit" value="Olahin">
+                </form>
+                <table v-if="queryIsi.length > 0">
+                    <thead>
+                        <tr>
+                            <th v-for="(x, n) in queryIsi[0]">{{ n }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="x in queryIsi">
+                            <td v-for="n in x">{{ n }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+    </template><style>
+    li {
+        margin-bottom: 10px;
+    }
+
+    td,
+    th {
+        border: 1px solid black;
+        padding: 10px;
+        vertical-align: top;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
+
+    input,
+    textarea {
+        display: block;
+        margin-bottom: 10px;
+    }
+</style><script>
+routes.push({
+    path: '/database',
+    component: {
+        template: '#v-f9eb1113',
+        
+        data() {
+            return {
+                table: [],
+                terpilihJudul: '',
+                terpilihIsi: [],
+                queryIsi: [],
+                query: ''
+            };
+        },
+        mounted() {
+            this.table = Object.keys(alasql.tables);
+            this.pilihTable(this.table.sort()[0]);
+        },
+        methods: {
+            pilihTable(table) {
+                this.terpilihJudul = table;
+                this.terpilihIsi = alasql('select * from ' + table);
+            },
+            jalankanQuery() {
+                this.queryIsi = alasql(this.query);
+            }
+        }
+    
+    }
+});
+</script><template id="v-6a3a438c"><h1>Aplikasi Stok Barang</h1></template><script>
+      routes.push({
+          path: '/',
+          component: {
+              template: '#v-6a3a438c'
+          }
+      });
+      </script><template id="v-e68df95a"><h2>List Stok Barang</h2></template><script>
+      routes.push({
+          path: '/stok/list',
+          component: {
+              template: '#v-e68df95a'
+          }
+      });
+      </script><template id="v-a4327d98"><h1 v-if="$route.params.sebagai == 'baru'">Tambah Stok</h1>
+
+<form action="">
+    <label for="">Nama Barang</label>
+    <input type="text">
+    <label for="">Jenis Barang</label>
+    <select name="" id="">
+        <option value=""></option>
+    </select>
+    <label for="">Ukuran</label>
+    <select name="" id="">
+        <option value=""></option>
+    </select>
+    <label for="">Harga Beli</label>
+    <input type="number" name="" id="">
+</form></template><script>
+      routes.push({
+          path: '/stok/form/:sebagai',
+          component: {
+              template: '#v-a4327d98'
+          }
+      });
+      </script></html-vue>
+
+    <script>
+
+
+        const router = VueRouter.createRouter({
+            history: VueRouter.createWebHashHistory(),
+            routes,
+        });
+
+        const app = Vue.createApp({});
+        app.use(router);
+        app.mount('#app');
+
+    </script>
+</body>
+
+</html>
